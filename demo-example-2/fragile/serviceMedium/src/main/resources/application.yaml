@@ -1,0 +1,10 @@
+server:
+  port: 8082
+service-low:
+  url: "http://localhost:8081"
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 2000
+        readTimeout: 30000
