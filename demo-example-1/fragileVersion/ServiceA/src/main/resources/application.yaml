@@ -1,0 +1,10 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: a
+web-client:
+  service-b:
+    base-url: "http://localhost:8082"
+  service-c:
+    base-url: "http://localhost:8083"
