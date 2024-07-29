@@ -1,0 +1,72 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: service-a-config
+  namespace: argoapps
+data:
+  application.yml: |-
+    logPath: messages
+    config:
+      service-host-b: "http://b.argoapps.svc:8082/get"
+      service-host-c: "http://c.argoapps.svc:8083/calc"
+    server:
+      port: 8081
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: service-b-config
+  namespace: argoapps
+data:
+  application.yml: |-
+    logPath: messages
+    server:
+      port: 8082
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: service-c-config
+  namespace: argoapps
+data:
+  application.yml: |-
+    logPath: messages
+    config:
+      service-host-d: "http://d.argoapps.svc:8084/get"
+      service-host-e: "http://e.argoapps.svc:8085/get"
+    server:
+      port: 8083
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: service-d-config
+  namespace: argoapps
+data:
+  application.yml: |-
+    logPath: messages
+    server:
+      port: 8084
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: service-e-config
+  namespace: argoapps
+data:
+  application.yml: |-
+    logPath: messages
+    server:
+      port: 8085    
+    spring:
+      jpa:
+        generate-ddl: true
+        hibernate:
+          ddl-auto: create-drop
+        defer-datasource-initialization: true
+        open-in-view: false
+      datasource:
+        url: jdbc:postgresql://pgdb.argoapps.svc:5432/postgres
+        username: postgres
+        password: postgres
+        driver-class-name: org.postgresql.Driver

@@ -1,0 +1,302 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: ingressgateway-default
+    istio: ingressgateway-default
+    template: ingress
+  name: ingressgateway-default
+  namespace: argoapps
+spec:
+  progressDeadlineSeconds: 1200
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: ingressgateway-default
+      istio: ingressgateway-default
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        inject.istio.io/templates: gateway
+        prometheus.io/path: /stats/prometheus
+        prometheus.io/port: '15020'
+        prometheus.io/scrape: 'true'
+        sidecar.istio.io/inject: "false"
+      creationTimestamp: null
+      labels:
+        app: ingressgateway-default
+        install.operator.istio.io/owning-resource: unknown
+        istio: ingressgateway-default
+        istio.io/rev: default
+        operator.istio.io/component: IngressGateways
+        service.istio.io/canonical-name: ingressgateway-default
+        service.istio.io/canonical-revision: latest
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - preference:
+                matchExpressions:
+                  - key: beta.kubernetes.io/arch
+                    operator: In
+                    values:
+                      - amd64
+              weight: 2
+            - preference:
+                matchExpressions:
+                  - key: beta.kubernetes.io/arch
+                    operator: In
+                    values:
+                      - ppc64le
+              weight: 2
+            - preference:
+                matchExpressions:
+                  - key: beta.kubernetes.io/arch
+                    operator: In
+                    values:
+                      - s390x
+              weight: 2
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: beta.kubernetes.io/arch
+                    operator: In
+                    values:
+                      - amd64
+                      - ppc64le
+                      - s390x
+      containers:
+        - args:
+            - proxy
+            - router
+            - --domain
+            - $(POD_NAMESPACE).svc.cluster.local
+            - --proxyLogLevel=warning
+            - --proxyComponentLogLevel=misc:error
+            - --log_output_level=default:info
+            - --serviceCluster
+            - ingressgateway-default.$(POD_NAMESPACE)
+          env:
+            - name: JWT_POLICY
+              value: third-party-jwt
+            - name: PILOT_CERT_PROVIDER
+              value: istiod
+            - name: CA_ADDR
+              value: istiod.istio-system.svc:15012
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            - name: INSTANCE_IP
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.podIP
+            - name: HOST_IP
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.hostIP
+            - name: SERVICE_ACCOUNT
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.serviceAccountName
+            - name: ISTIO_META_WORKLOAD_NAME
+              value: ingressgateway-default
+            - name: ISTIO_META_OWNER
+              value: kubernetes://apis/apps/v1/namespaces/argoapps/deployments/ingressgateway-default
+            - name: ISTIO_META_MESH_ID
+              value: cluster.local
+            - name: PROXY_CONFIG
+              value: |
+                {"discoveryAddress":"istiod.istio-system.svc:15012","tracing":{"zipkin":{"address":"jaeger-collector.istio-system.svc:9411"},"tlsSettings":{"subjectAltNames":[]}},"proxyMetadata":{"DNS_AGENT":""}}
+            - name: TRUST_DOMAIN
+              value: cluster.local
+            - name: ISTIO_META_UNPRIVILEGED_POD
+              value: "true"
+            - name: ISTIO_META_ROUTER_MODE
+              value: standard
+            - name: ISTIO_META_CLUSTER_ID
+              value: Kubernetes
+          image: swr.ru-moscow-1.hc.sbercloud.ru/sber/proxyv2:custom-1.11.2
+          imagePullPolicy: IfNotPresent
+          name: istio-proxy
+          ports:
+            - containerPort: 15021
+              name: status-port
+              protocol: TCP
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+            - containerPort: 5443
+              name: https
+              protocol: TCP
+            - containerPort: 15090
+              name: http-envoy-prom
+              protocol: TCP
+          readinessProbe:
+            failureThreshold: 30
+            httpGet:
+              path: /healthz/ready
+              port: 15021
+              scheme: HTTP
+            initialDelaySeconds: 1
+            periodSeconds: 2
+            successThreshold: 1
+            timeoutSeconds: 5
+          resources:
+            limits:
+              cpu: 400m
+              memory: 600Mi
+            requests:
+              cpu: 200m
+              memory: 512Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - mountPath: /etc/istio/proxy
+              name: istio-envoy
+            - mountPath: /var/run/secrets/istio
+              name: istiod-ca-cert
+            - mountPath: /etc/istio/config
+              name: config-volume
+            - mountPath: /var/run/secrets/tokens
+              name: istio-token
+              readOnly: true
+            - mountPath: /var/lib/istio/data
+              name: istio-data
+            - mountPath: /etc/istio/pod
+              name: podinfo
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: { }
+      serviceAccountName: default
+      terminationGracePeriodSeconds: 60
+      volumes:
+        - configMap:
+            defaultMode: 420
+            name: istio-ca-root-cert
+          name: istiod-ca-cert
+        - name: istio-token
+          projected:
+            defaultMode: 420
+            sources:
+              - serviceAccountToken:
+                  audience: istio-ca
+                  expirationSeconds: 43200
+                  path: istio-token
+        - downwardAPI:
+            defaultMode: 420
+            items:
+              - fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.labels
+                path: labels
+              - fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.annotations
+                path: annotations
+          name: podinfo
+        - emptyDir: { }
+          name: istio-envoy
+        - emptyDir: { }
+          name: istio-data
+        - configMap:
+            defaultMode: 420
+            name: istio
+            optional: true
+          name: config-volume
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kubernetes.io/elb.autocreate: '{"type":"public","bandwidth_name":"cce-bandwidth-1632310175221","bandwidth_chargemode":"traffic","bandwidth_size":5,"bandwidth_sharetype":"PER","eip_type":"5_bgp"}'
+    kubernetes.io/elb.class: union
+    kubernetes.io/elb.enterpriseID: "0"
+    kubernetes.io/elb.health-check-flag: "on"
+    kubernetes.io/elb.health-check-option: '{"protocol":"TCP","delay":"5","timeout":"10","max_retries":"3"}'
+    kubernetes.io/elb.lb-algorithm: ROUND_ROBIN
+  finalizers:
+    - service.kubernetes.io/load-balancer-cleanup
+  labels:
+    app: ingressgateway-default
+    istio: ingressgateway-default
+    template: ingress
+  name: ingressgateway-svc
+  namespace: argoapps
+spec:
+  externalTrafficPolicy: Cluster
+  ports:
+    - name: status-port
+      port: 15021
+      protocol: TCP
+      targetPort: 15021
+    - name: http-8080
+      port: 8080
+  selector:
+    app: ingressgateway-default
+    istio: ingressgateway-default
+  sessionAffinity: None
+  type: LoadBalancer
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  labels:
+    template: ingress
+  name: ingressgateway-gw
+  namespace: argoapps
+spec:
+  selector:
+    istio: ingressgateway-default
+  servers:
+    - hosts:
+        - '*'
+      port:
+        name: http-8080
+        number: 8080
+        protocol: HTTP
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  labels:
+    template: ingress
+  name: internal-host-vs
+  namespace: argoapps
+spec:
+  exportTo:
+    - .
+  gateways:
+    - ingressgateway-gw
+  hosts:
+    - '*'
+  http:
+    - match:
+        - uri:
+            prefix: /calc
+      route:
+        - destination:
+            host: a
+            port:
+              number: 8081

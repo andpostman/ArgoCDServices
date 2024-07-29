@@ -1,0 +1,48 @@
+{
+  "microservices": [
+    {
+      "name": "a",
+      "version": "v1",
+      "dependencies": [
+        {
+          "name": "b",
+          "version": "v1"
+        },
+        {
+          "name": "c",
+          "version": "v1"
+        }
+      ]
+    },
+    {
+      "name": "b",
+      "version": "v1",
+      "dependencies": [
+        {
+          "name": "d",
+          "version": "v1"
+        }
+      ]
+    },
+    {
+      "name": "c",
+      "version": "v1",
+      "dependencies": []
+    },
+    {
+      "name": "d",
+      "version": "v1",
+      "dependencies": [
+        {
+          "name": "e",
+          "version": "v1"
+        }
+      ]
+    },
+    {
+      "name": "e",
+      "version": "v1",
+      "dependencies": []
+    }
+  ]
+}
