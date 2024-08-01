@@ -1,24 +1,23 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  labels:
-    app: d
-  name: d
+  name: service-d
   namespace: argoapps
-  generation: 1
-  annotations:
-    deployment.kubernetes.io/revision: '1'
+  labels:
+    app: app-d
+    app.kubernetes.io/name: app-d
+    app.kubernetes.io/version: 1.0.0
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: d
+      app: app-d
   template:
     metadata:
-      creationTimestamp: null
       labels:
-        app: d
-        name: d
+        app: app-d
+        app.kubernetes.io/name: app-d
+        app.kubernetes.io/version: 1.0.0
       annotations:
         sidecar.istio.io/inject: 'true'
     spec:
@@ -30,7 +29,7 @@ spec:
                   name: service-d-config
                   key: application.yml
           name: service-d
-          image: 'swr.ru-moscow-1.hc.sbercloud.ru/sber/argo-serviced:v1'
+          image: 'platformv.sber.ru/sber/argo-service:1.0.0'
           ports:
             - containerPort: 8084
               protocol: TCP
@@ -68,25 +67,6 @@ spec:
       maxSurge: 25%
   revisionHistoryLimit: 10
   progressDeadlineSeconds: 120
-status:
-  observedGeneration: 1
-  replicas: 1
-  updatedReplicas: 1
-  readyReplicas: 1
-  availableReplicas: 1
-  conditions:
-    - type: Available
-      status: 'True'
-      lastUpdateTime: '2022-05-12T14:00:28Z'
-      lastTransitionTime: '2022-05-12T14:00:28Z'
-      reason: MinimumReplicasAvailable
-      message: Deployment has minimum availability.
-    - type: Progressing
-      status: 'True'
-      lastUpdateTime: '2022-05-12T14:00:28Z'
-      lastTransitionTime: '2022-05-12T14:00:18Z'
-      reason: NewReplicaSetAvailable
-      message: ReplicaSet "a-5dccc9b6b6" has successfully progressed.
 ---
 kind: Service
 apiVersion: v1
@@ -106,5 +86,3 @@ spec:
   selector:
     app: d
   type: ClusterIP
-status:
-  loadBalancer: { }

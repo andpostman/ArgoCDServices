@@ -2,8 +2,10 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   labels:
-    app: c
-  name: c
+    app: app-c
+    app.kubernetes.io/name: app-c
+    app.kubernetes.io/version: 1.2.3-beta.4+20220101
+  name: service-c
   namespace: argoapps
   generation: 1
   annotations:
@@ -12,13 +14,14 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      name: c
+      app: app-c
   template:
     metadata:
       creationTimestamp: null
       labels:
-        app: c
-        name: c
+        app: app-c
+        app.kubernetes.io/name: app-c
+        app.kubernetes.io/version: 1.2.3-beta.4+20220101
       annotations:
         sidecar.istio.io/inject: 'true'
     spec:
@@ -30,7 +33,7 @@ spec:
                   name: service-c-config
                   key: application.yml
           name: service-c
-          image: 'swr.ru-moscow-1.hc.sbercloud.ru/sber/argo-servicec:v1'
+          image: 'argo-servicec:1.2.3-beta.4+20220101'
           ports:
             - containerPort: 8083
               protocol: TCP
@@ -116,4 +119,3 @@ spec:
   type: ClusterIP
 status:
   loadBalancer: { }
-
