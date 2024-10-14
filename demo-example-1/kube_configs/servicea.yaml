@@ -5,6 +5,7 @@ metadata:
     app: app-a
     app.kubernetes.io/name: app-a
     app.kubernetes.io/version: 1.0.0
+    app.kubernetes.io/instance: app-a
   name: a
   namespace: argoapps
 spec:
@@ -18,7 +19,9 @@ spec:
         app: app-a
         app.kubernetes.io/name: app-a
         app.kubernetes.io/version: 1.0.0
+        app.kubernetes.io/instance: app-a
 #      annotations:
+#        application.resourceTrackingMethod: label
 #        sidecar.istio.io/inject: 'true'
     spec:
       containers:
@@ -75,6 +78,7 @@ metadata:
     app: app-a
     app.kubernetes.io/name: app-a
     app.kubernetes.io/version: 1.0.0
+    app.kubernetes.io/instance: app-a
 spec:
   ports:
     - name: http-8082
