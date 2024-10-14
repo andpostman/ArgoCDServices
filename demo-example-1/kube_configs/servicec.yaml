@@ -4,12 +4,9 @@ metadata:
   labels:
     app: app-c
     app.kubernetes.io/name: app-c
-    app.kubernetes.io/version: 1.2.3-beta.4+20220101
-  name: service-c
+    app.kubernetes.io/version: 1.0.0
+  name: c
   namespace: argoapps
-  generation: 1
-  annotations:
-    deployment.kubernetes.io/revision: '1'
 spec:
   replicas: 1
   selector:
@@ -17,13 +14,12 @@ spec:
       app: app-c
   template:
     metadata:
-      creationTimestamp: null
       labels:
         app: app-c
         app.kubernetes.io/name: app-c
-        app.kubernetes.io/version: 1.2.3-beta.4+20220101
-      annotations:
-        sidecar.istio.io/inject: 'true'
+        app.kubernetes.io/version: 1.0.0
+#      annotations:
+#        sidecar.istio.io/inject: 'true'
     spec:
       containers:
         - env:
@@ -32,8 +28,8 @@ spec:
                 configMapKeyRef:
                   name: service-c-config
                   key: application.yml
-          name: service-c
-          image: 'argo-servicec:1.2.3-beta.4+20220101'
+          name: c
+          image: 'argo-servicec:1.0.0'
           ports:
             - containerPort: 8083
               protocol: TCP
@@ -71,31 +67,16 @@ spec:
       maxSurge: 25%
   revisionHistoryLimit: 10
   progressDeadlineSeconds: 120
-status:
-  observedGeneration: 1
-  replicas: 1
-  updatedReplicas: 1
-  readyReplicas: 1
-  availableReplicas: 1
-  conditions:
-    - type: Available
-      status: 'True'
-      lastUpdateTime: '2022-05-12T14:00:28Z'
-      lastTransitionTime: '2022-05-12T14:00:28Z'
-      reason: MinimumReplicasAvailable
-      message: Deployment has minimum availability.
-    - type: Progressing
-      status: 'True'
-      lastUpdateTime: '2022-05-12T14:00:28Z'
-      lastTransitionTime: '2022-05-12T14:00:18Z'
-      reason: NewReplicaSetAvailable
-      message: ReplicaSet "a-5dccc9b6b6" has successfully progressed.
 ---
 kind: Service
 apiVersion: v1
 metadata:
   name: c
   namespace: argoapps
+  labels:
+    app: app-c
+    app.kubernetes.io/name: app-c
+    app.kubernetes.io/version: 1.0.0
 spec:
   ports:
     - name: http-8084
@@ -115,7 +96,5 @@ spec:
       protocol: TCP
       targetPort: 8081
   selector:
-    app: c
+    app: app-c
   type: ClusterIP
-status:
-  loadBalancer: { }

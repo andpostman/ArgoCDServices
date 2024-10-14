@@ -1,7 +1,7 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: service-d
+  name: d
   namespace: argoapps
   labels:
     app: app-d
@@ -18,8 +18,8 @@ spec:
         app: app-d
         app.kubernetes.io/name: app-d
         app.kubernetes.io/version: 1.0.0
-      annotations:
-        sidecar.istio.io/inject: 'true'
+#      annotations:
+#        sidecar.istio.io/inject: 'true'
     spec:
       containers:
         - env:
@@ -28,8 +28,8 @@ spec:
                 configMapKeyRef:
                   name: service-d-config
                   key: application.yml
-          name: service-d
-          image: 'argo-service:1.0.0'
+          name: d
+          image: 'argo-serviced:1.0.0'
           ports:
             - containerPort: 8084
               protocol: TCP
@@ -73,6 +73,10 @@ apiVersion: v1
 metadata:
   name: d
   namespace: argoapps
+  labels:
+    app: app-d
+    app.kubernetes.io/name: app-d
+    app.kubernetes.io/version: 1.0.0
 spec:
   ports:
     - name: http-8084
@@ -84,5 +88,5 @@ spec:
       protocol: TCP
       targetPort: 8083
   selector:
-    app: d
+    app: app-d
   type: ClusterIP
