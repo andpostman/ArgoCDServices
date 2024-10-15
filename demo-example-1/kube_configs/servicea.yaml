@@ -8,6 +8,9 @@ metadata:
     app.kubernetes.io/name: argoapps-app-a
     app.kubernetes.io/part-of: argoapps
     app.kubernetes.io/version: 1.0.0
+    app.kubernetes.io/instance: app-a
+  annotations:
+    argocd.argoproj.io/tracking-id: app-a:apps/Deployment:argoapps/argoapps-app-a
 spec:
   replicas: 1
   selector:
@@ -73,6 +76,9 @@ metadata:
     app.kubernetes.io/name: argoapps-app-a
     app.kubernetes.io/part-of: argoapps
     app.kubernetes.io/version: 1.0.0
+    app.kubernetes.io/instance: app-a
+  annotations:
+    argocd.argoproj.io/tracking-id: app-a:apps/Deployment:argoapps/argoapps-app-a
 spec:
   ports:
     - name: http-8082
