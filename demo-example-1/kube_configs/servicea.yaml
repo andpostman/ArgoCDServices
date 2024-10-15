@@ -2,26 +2,25 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   labels:
-    app: app-a
-    app.kubernetes.io/name: app-a
+    app.kubernetes.io/component: app-a
+    app.kubernetes.io/name: argoapps-app-a
+    app.kubernetes.io/part-of: argoapps
     app.kubernetes.io/version: 1.0.0
-    app.kubernetes.io/instance: app-a
+#    app.kubernetes.io/instance: app-a
   name: a
   namespace: argoapps
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: app-a
+      app.kubernetes.io/name: argoapps-app-a
+#      app: app-a
   template:
     metadata:
       labels:
-        app: app-a
-        app.kubernetes.io/name: app-a
-        app.kubernetes.io/version: 1.0.0
-        app.kubernetes.io/instance: app-a
-      annotations:
-        application.resourceTrackingMethod: label
+        app.kubernetes.io/name: argoapps-app-a
+#      annotations:
+#        application.resourceTrackingMethod: label
 #        sidecar.istio.io/inject: 'true'
     spec:
       containers:
@@ -75,8 +74,9 @@ metadata:
   name: a
   namespace: argoapps
   labels:
-    app: app-a
-    app.kubernetes.io/name: app-a
+    app.kubernetes.io/component: app-a
+    app.kubernetes.io/name: argoapps-app-a
+    app.kubernetes.io/part-of: argoapps
     app.kubernetes.io/version: 1.0.0
 #    app.kubernetes.io/instance: app-a
 spec:
@@ -98,5 +98,5 @@ spec:
       protocol: TCP
       targetPort: 8080
   selector:
-    app: app-a
+    app.kubernetes.io/name: argoapps-app-a
   type: ClusterIP
