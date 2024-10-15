@@ -5,12 +5,16 @@ metadata:
   namespace: argoapps
 data:
   application.yml: |-
-    logPath: messages
-    config:
-      service-host-b: "http://b.argoapps.svc.cluster.local:8082/get"
-      service-host-c: "http://c.argoapps.svc.cluster.local:8083/calc"
     server:
       port: 8081
+    spring:
+      application:
+        name: a
+    web-client:
+      service-b:
+        base-url: "http://b.argoapps.svc:8082"
+      service-c:
+        base-url: "http://c.argoapps.svc:8083"
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -19,7 +23,6 @@ metadata:
   namespace: argoapps
 data:
   application.yml: |-
-    logPath: messages
     server:
       port: 8082
 ---
@@ -30,12 +33,13 @@ metadata:
   namespace: argoapps
 data:
   application.yml: |-
-    logPath: messages
-    config:
-      service-host-d: "http://d.argoapps.svc:8084/get"
-      service-host-e: "http://e.argoapps.svc:8085/get"
     server:
       port: 8083
+    web-client:
+      service-d:
+        base-url: "http://d.argoapps.svc:8084"
+      service-e:
+        base-url: "http://e.argoapps.svc:8085"
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -44,7 +48,6 @@ metadata:
   namespace: argoapps
 data:
   application.yml: |-
-    logPath: messages
     server:
       port: 8084
 ---
@@ -55,18 +58,5 @@ metadata:
   namespace: argoapps
 data:
   application.yml: |-
-    logPath: messages
     server:
-      port: 8085    
-    spring:
-      jpa:
-        generate-ddl: true
-        hibernate:
-          ddl-auto: create-drop
-        defer-datasource-initialization: true
-        open-in-view: false
-      datasource:
-        url: jdbc:postgresql://pgdb.argoapps.svc:5432/postgres
-        username: postgres
-        password: postgres
-        driver-class-name: org.postgresql.Driver
+      port: 8085
