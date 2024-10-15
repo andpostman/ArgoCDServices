@@ -16,7 +16,7 @@ spec:
   template:
     metadata:
       labels:
-#        app: app-a
+        app: app-a
         app.kubernetes.io/name: app-a
         app.kubernetes.io/version: 1.0.0
         app.kubernetes.io/instance: app-a
