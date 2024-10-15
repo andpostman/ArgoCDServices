@@ -12,9 +12,9 @@ data:
         name: a
     web-client:
       service-b:
-        base-url: "http://b.argoapps.svc:8082"
+        base-url: "http://argoapps-app-b.argoapps.svc:8082"
       service-c:
-        base-url: "http://c.argoapps.svc:8083"
+        base-url: "http://argoapps-app-c.argoapps.svc:8083"
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -37,9 +37,9 @@ data:
       port: 8083
     web-client:
       service-d:
-        base-url: "http://d.argoapps.svc:8084"
+        base-url: "http://argoapps-app-d.argoapps.svc:8084"
       service-e:
-        base-url: "http://e.argoapps.svc:8085"
+        base-url: "http://argoapps-app-e.argoapps.svc:8085"
 ---
 apiVersion: v1
 kind: ConfigMap

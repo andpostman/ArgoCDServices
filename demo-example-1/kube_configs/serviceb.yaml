@@ -1,23 +1,22 @@
-kind: Deployment
 apiVersion: apps/v1
+kind: Deployment
 metadata:
-  labels:
-    app: app-b
-    app.kubernetes.io/name: app-b
-    app.kubernetes.io/version: 1.1.0
-  name: b
+  name: argoapps-app-b
   namespace: argoapps
+  labels:
+    app.kubernetes.io/component: app-b
+    app.kubernetes.io/name: argoapps-app-b
+    app.kubernetes.io/part-of: argoapps
+    app.kubernetes.io/version: 1.1.0
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: app-b
+      app.kubernetes.io/name: argoapps-app-b
   template:
     metadata:
       labels:
-        app: app-b
-        app.kubernetes.io/name: app-b
-        app.kubernetes.io/version: 1.1.0
+        app.kubernetes.io/name: argoapps-app-b
 #      annotations:
 #        sidecar.istio.io/inject: 'true'
     spec:
@@ -28,7 +27,7 @@ spec:
                 configMapKeyRef:
                   name: service-b-config
                   key: application.yml
-          name: b
+          name: argoapps-app-b
           image: 'argo-serviceb:1.1.0'
           ports:
             - containerPort: 8082
@@ -68,14 +67,15 @@ spec:
   revisionHistoryLimit: 10
   progressDeadlineSeconds: 120
 ---
-kind: Service
 apiVersion: v1
+kind: Service
 metadata:
-  name: b
+  name: argoapps-app-b
   namespace: argoapps
   labels:
-    app: app-b
-    app.kubernetes.io/name: app-b
+    app.kubernetes.io/component: app-b
+    app.kubernetes.io/name: argoapps-app-b
+    app.kubernetes.io/part-of: argoapps
     app.kubernetes.io/version: 1.1.0
 spec:
   ports:
@@ -88,5 +88,5 @@ spec:
       protocol: TCP
       targetPort: 8081
   selector:
-    app: app-b
+    app.kubernetes.io/name: argoapps-app-b
   type: ClusterIP
