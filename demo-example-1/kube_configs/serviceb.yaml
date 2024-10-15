@@ -48,8 +48,8 @@ spec:
           imagePullPolicy: IfNotPresent
       restartPolicy: Always
       terminationGracePeriodSeconds: 60
-      imagePullSecrets:
-        - name: default-secret
+#      imagePullSecrets:
+#        - name: default-secret
       dnsPolicy: ClusterFirst
       securityContext: { }
       schedulerName: default-scheduler

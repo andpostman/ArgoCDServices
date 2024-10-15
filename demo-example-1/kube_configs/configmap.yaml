@@ -7,8 +7,8 @@ data:
   application.yml: |-
     logPath: messages
     config:
-      service-host-b: "http://b.argoapps.svc:8082/get"
-      service-host-c: "http://c.argoapps.svc:8083/calc"
+      service-host-b: "http://b.argoapps.svc.cluster.local:8082/get"
+      service-host-c: "http://c.argoapps.svc.cluster.local:8083/calc"
     server:
       port: 8081
 ---
