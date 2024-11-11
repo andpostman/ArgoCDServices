@@ -15,8 +15,7 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/instance: app-a
-#      app.kubernetes.io/name: argoapps-app-a
+      app.kubernetes.io/name: argoapps-app-a
   template:
     metadata:
       labels:
@@ -100,5 +99,5 @@ spec:
       protocol: TCP
       targetPort: 8080
   selector:
-    app.kubernetes.io/instance: app-a
+    app.kubernetes.io/name: argoapps-app-a
   type: ClusterIP
