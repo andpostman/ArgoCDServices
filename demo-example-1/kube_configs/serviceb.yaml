@@ -6,19 +6,20 @@ metadata:
   labels:
 #    app.kubernetes.io/component: app-b
     app.kubernetes.io/name: argoapps-app-b
-    app.kubernetes.io/part-of: argoapps
+#    app.kubernetes.io/part-of: argoapps
     app.kubernetes.io/version: 1.1.0
     app.kubernetes.io/instance: app-b
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: argoapps-app-b
+#      app.kubernetes.io/name: argoapps-app-b
+      app.kubernetes.io/instance: app-b
   template:
     metadata:
       labels:
         app.kubernetes.io/name: argoapps-app-b
-        app.kubernetes.io/part-of: argoapps
+#        app.kubernetes.io/part-of: argoapps
         app.kubernetes.io/version: 1.1.0
         app.kubernetes.io/instance: app-b
 #      annotations:
@@ -79,7 +80,7 @@ metadata:
   labels:
 #    app.kubernetes.io/component: app-b
     app.kubernetes.io/name: argoapps-app-b
-    app.kubernetes.io/part-of: argoapps
+#    app.kubernetes.io/part-of: argoapps
     app.kubernetes.io/version: 1.1.0
     app.kubernetes.io/instance: app-b
 spec:
@@ -93,5 +94,5 @@ spec:
       protocol: TCP
       targetPort: 8081
   selector:
-    app.kubernetes.io/name: argoapps-app-b
+    app.kubernetes.io/instance: app-b
   type: ClusterIP
