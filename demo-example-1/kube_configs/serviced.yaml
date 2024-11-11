@@ -5,10 +5,11 @@ metadata:
   namespace: argoapps
   labels:
 #    app: app-d
-    app.kubernetes.io/component: app-d
+#    app.kubernetes.io/component: app-d
     app.kubernetes.io/name: argoapps-app-d
     app.kubernetes.io/part-of: argoapps
     app.kubernetes.io/version: 1.0.0
+    app.kubernetes.io/instance: app-d
 spec:
   replicas: 1
   selector:
@@ -18,6 +19,9 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: argoapps-app-d
+        app.kubernetes.io/part-of: argoapps
+        app.kubernetes.io/version: 1.0.0
+        app.kubernetes.io/instance: app-d
 #        app: app-d
 #        app.kubernetes.io/version: 1.0.0
 #      annotations:
@@ -77,10 +81,11 @@ metadata:
   namespace: argoapps
   labels:
 #    app: app-d
-    app.kubernetes.io/component: app-d
+#    app.kubernetes.io/component: app-d
     app.kubernetes.io/name: argoapps-app-d
     app.kubernetes.io/part-of: argoapps
     app.kubernetes.io/version: 1.0.0
+    app.kubernetes.io/instance: app-d
 spec:
   ports:
     - name: http-8084

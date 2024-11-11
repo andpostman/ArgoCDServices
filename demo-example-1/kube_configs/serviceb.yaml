@@ -4,10 +4,11 @@ metadata:
   name: argoapps-app-b
   namespace: argoapps
   labels:
-    app.kubernetes.io/component: app-b
+#    app.kubernetes.io/component: app-b
     app.kubernetes.io/name: argoapps-app-b
     app.kubernetes.io/part-of: argoapps
     app.kubernetes.io/version: 1.1.0
+    app.kubernetes.io/instance: app-b
 spec:
   replicas: 1
   selector:
@@ -17,6 +18,9 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: argoapps-app-b
+        app.kubernetes.io/part-of: argoapps
+        app.kubernetes.io/version: 1.1.0
+        app.kubernetes.io/instance: app-b
 #      annotations:
 #        sidecar.istio.io/inject: 'true'
     spec:
@@ -73,10 +77,11 @@ metadata:
   name: argoapps-app-b
   namespace: argoapps
   labels:
-    app.kubernetes.io/component: app-b
+#    app.kubernetes.io/component: app-b
     app.kubernetes.io/name: argoapps-app-b
     app.kubernetes.io/part-of: argoapps
     app.kubernetes.io/version: 1.1.0
+    app.kubernetes.io/instance: app-b
 spec:
   ports:
     - name: http-8082
